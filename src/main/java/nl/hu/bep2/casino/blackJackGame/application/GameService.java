@@ -1,16 +1,13 @@
 package nl.hu.bep2.casino.blackJackGame.application;
 
-import nl.hu.bep2.casino.blackJackGame.data.BlackJackRepository;
+import nl.hu.bep2.casino.blackJackGame.data.*;
 import nl.hu.bep2.casino.blackJackGame.domain.Dealer;
 import nl.hu.bep2.casino.blackJackGame.domain.Game;
 import nl.hu.bep2.casino.blackJackGame.domain.Player;
 import nl.hu.bep2.casino.blackJackGame.domain.blackJackDeck.Deck;
 import nl.hu.bep2.casino.blackJackGame.domain.blackJackDeck.Hand;
-import nl.hu.bep2.casino.blackJackGame.presentation.DeckFactory;
-import nl.hu.bep2.casino.chips.application.Balance;
 import nl.hu.bep2.casino.chips.application.ChipsService;
 
-import nl.hu.bep2.casino.chips.domain.Chips;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,6 +16,12 @@ import javax.transaction.Transactional;
 @Service
 public class GameService {
     private final BlackJackRepository blackJackRepository;
+    private final DealerRepossitory dealerRepossitory;
+    private final DeckRepossitory deckRepossitory;
+    private final PlayerRepository playerRepository;
+    private final HandRepository handRepository;
+    private final CardRepository cardRepository;
+    private  CarrdService carrdService;
     private String playerName;
     private Game game;
     private Dealer dealer;
@@ -26,17 +29,23 @@ public class GameService {
     private ChipsService chipsService;
 
 
-    public GameService(BlackJackRepository blackJackRepository) {
+    public GameService(BlackJackRepository blackJackRepository, DealerRepossitory dealerRepossitory, DeckRepossitory deckRepossitory, PlayerRepository playerRepository, HandRepository handRepository, CardRepository cardRepository, CarrdService carrdService) {
         this.blackJackRepository = blackJackRepository;
+        this.dealerRepossitory = dealerRepossitory;
+        this.deckRepossitory = deckRepossitory;
+        this.playerRepository = playerRepository;
+        this.handRepository = handRepository;
+        this.cardRepository = cardRepository;
+        this.carrdService = carrdService;
     }
 
 
     public Game StartGame(String playerName, ChipsService chipsService) {
-        System.out.println(game.getPlayer());
+
         this.chipsService = chipsService;
         this.playerName = playerName;
 
-        DeckFactory h = new DeckFactory();
+        DeckFactory h = new DeckFactory(carrdService);
         Deck deck = h.getRandomDeck();
 
         Hand dealerHand = new Hand();
@@ -55,15 +64,13 @@ public class GameService {
 
         Game game = new Game(player, dealer);
 
-//        this.chipsService = chipsService;
-//        this.playerName = playerName;
-//        Hand playerCards = new Hand();
-//        Hand dealerCards = new Hand();
-//        player = new Player(playerCards);
-//        dealer = new Dealer(dealerCards);
-//        game = new Game(player, dealer);
+        this.handRepository.save(playerHand);
+        this.handRepository.save(dealerHand);
+        this.deckRepossitory.save(deck);
+        this.playerRepository.save(player);
+        this.dealerRepossitory.save(dealer);
        this.blackJackRepository.save(game);
-        System.out.println(game.getPlayer());
+        System.out.println(game);
         return this.showBalanceFor(game);
     }
     private Game showBalanceFor(Game game) {

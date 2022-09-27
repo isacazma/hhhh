@@ -9,9 +9,9 @@ import java.util.List;
 @Entity
 public class Deck {
     @Id
-    @Column(name = "id", nullable = false)
+    @GeneratedValue
     private Long id;
-    @OneToMany
+    @Lob
     private List<Card>cards = new ArrayList<Card>();
 
 private int teller = 0;
@@ -30,6 +30,17 @@ private int teller = 0;
 }
 
 
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
+    }
+
+    public int getTeller() {
+        return teller;
+    }
+
+    public void setTeller(int teller) {
+        this.teller = teller;
+    }
 
     public void addCard(Card kaart){
         cards.add(kaart);

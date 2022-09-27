@@ -10,7 +10,7 @@ import java.util.List;
 public class Hand {
 
 
-    @OneToMany()
+    @OneToMany(cascade = CascadeType.ALL)
     private final List<Card> cards = new ArrayList<>();
 
     @Id
@@ -27,9 +27,19 @@ public class Hand {
 //    }
 
 
+    public List<Card> getCards() {
+        return cards;
+    }
 
+    public Long getId() {
+        return id;
+    }
 
-        public Hand() {}
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Hand() {}
 
         public void addCard(Card card) {
             this.cards.add(card);

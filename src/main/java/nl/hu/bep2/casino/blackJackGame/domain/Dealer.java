@@ -8,13 +8,12 @@ import javax.persistence.*;
 
 @Entity
 public class Dealer {
-
-    @OneToOne()
-    @JoinColumn(name = "hand")
+    @OneToOne(cascade = {CascadeType.ALL})
+//    @JoinColumn(name = "hand")
     private Hand hand;
 
-    @OneToOne()
-    @JoinColumn(name = "deck")
+    @OneToOne(cascade = {CascadeType.ALL})
+//    @JoinColumn(name = "deck")
     private Deck deck;
 
     @Id
